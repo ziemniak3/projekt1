@@ -19,7 +19,7 @@ namespace projekt1
             RPN przyklad = new RPN(rownanie,x,xmin,xmax,n);
             //przyklad.naTokeny();
             przyklad.naPostfix();
-
+            Console.WriteLine(przyklad.oblicz());
         }
     }
 }
