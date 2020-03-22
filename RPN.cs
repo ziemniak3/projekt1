@@ -55,7 +55,7 @@ namespace projekt1
                     while(S.Peek()!="("){
                         Q.Enqueue(S.Pop());
                     }
-                        S.Pop();                                   
+                    S.Pop();                                   
                 }else if(D.ContainsKey(token)){
                     while(S.Count>0 && D[token]<=D[S.Peek()]){
                         Q.Enqueue(S.Pop());
@@ -118,6 +118,15 @@ namespace projekt1
             }
             return S1.Pop();
         }
-       
+
+       public void obliczPrzedzial(){
+           double skok = (this.xmax-this.xmin)/(this.n-1);
+           this.x = this.xmin;
+
+           for(int i =0;i<n;i++){
+               Console.WriteLine("{0} => {1}",this.x,this.oblicz());
+               this.x += skok;
+           }
+       }    
     }
 }

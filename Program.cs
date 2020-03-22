@@ -16,10 +16,10 @@ namespace projekt1
             xmax=double.Parse(args[3]);            
             n=int.Parse(args[4]);
 
-            RPN przyklad = new RPN(rownanie,x,xmin,xmax,n);
-            //przyklad.naTokeny();
+            RPN przyklad = new RPN(rownanie,x,xmin,xmax,n);            
             przyklad.naPostfix();
             Console.WriteLine(przyklad.oblicz());
+            przyklad.obliczPrzedzial();
         }
     }
 }
