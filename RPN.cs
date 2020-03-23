@@ -8,7 +8,7 @@ namespace projekt1
     {
         string rownanie;  
         double x, xmin, xmax;
-        int n;       
+        int n,minus;       
 
         public RPN (string rownanie, double x, double xmin, double xmax, int n){
             this.rownanie=rownanie;
@@ -21,13 +21,22 @@ namespace projekt1
         public string[] naTokeny(){
             Regex rx = new Regex (@"\+|\-|\*|\/|\(|\)|\^|(x)|(abs)|(cos)|(exp)|(log)|(sin)|(sqrt)|(tan)|(cosh)|(sinh)|(tanh)|(acos)|(asin)|(atan)|((\d*)(\.)?(\d+))");
             MatchCollection tokeny = rx.Matches(this.rownanie);            
-            string[] tabTokenow = new string[tokeny.Count];
-
+            string[] tabTokenow = new string[tokeny.Count];            
             int i=0;
+
             foreach (Match token in tokeny){
                 tabTokenow[i]= token.Value;                
                 i++;
-            }            
+            }
+
+            if(tabTokenow[0]=="-" && tabTokenow[1]=="("){
+                this.minus=1;
+                tabTokenow[0]="";
+            }else if(tabTokenow[0]=="-" && tabTokenow[1]!="("){
+                Console.WriteLine("Bledne wyrazenie, cos z minusem!");
+                Environment.Exit(0);
+            }
+
             return tabTokenow;
         }
 
@@ -58,13 +67,14 @@ namespace projekt1
                         i++;
                     }else if(i!=0){
                         if(wagaL==D[token]){
-                            Console.WriteLine("Bledne wyraznie !");
+                            Console.WriteLine("Bledne wyraznie, dwa operatory matematyczne obok siebie !");
                             Environment.Exit(0);
                         }
                         wagaL=D[token];                        
                     }                    
                 }                
             }
+
             foreach (string token in this.naTokeny()){
                 if(token=="(") nawias++;
                 else if(token==")") nawias--;
@@ -108,6 +118,7 @@ namespace projekt1
                 R.Add(tmp1);
                 Console.Write("{0} ",tmp1);
             }
+            
             Console.WriteLine();
         }
 
@@ -125,71 +136,76 @@ namespace projekt1
                 else if(D.ContainsKey(token)){
                     double a=S1.Pop();
                     if(D[token]==4){
-                        if(token=="abs"){
-                            a=Math.Abs(a);
-                        }
-                        else if(token=="cos"){
-                            a=Math.Cos(a);
-                        }
-                        else if(token=="exp"){
-                            a=Math.Exp(a);
-                        }
-                        else if(token=="log"){
-                            a=Math.Log(a);
-                        }
-                        else if(token=="sin"){
-                            a=Math.Sin(a);
-                        }                            
-                        else if(token=="sqrt"){
-                            a=Math.Sqrt(a);
-                        }
-                        else if(token=="tan"){
-                            a=Math.Tan(a);
-                        }
-                        else if(token=="cosh"){
-                            a=Math.Cosh(a);
-                        }
-                        else if(token=="sinh"){
-                            a=Math.Sinh(a);
-                        }
-                        else if(token=="tanh"){
-                            a=Math.Tanh(a);
-                        }
-                        else if(token=="acos"){
-                            a=Math.Acos(a);
-                        }
-                        else if(token=="asin"){
-                            a=Math.Asin(a);
-                        }
-                        else if(token=="atan"){
-                            a=Math.Atan(a);
+                        switch(token){
+                            case "abs":
+                                a=Math.Abs(a);
+                                break;
+                            case "cos":
+                                a=Math.Cos(a);
+                                break;
+                            case "exp":
+                                a=Math.Exp(a);
+                                break;
+                            case "log":
+                                a=Math.Log(a);
+                                break;
+                            case "sin":
+                                a=Math.Sin(a);
+                                break;
+                            case "sqrt":
+                                a=Math.Sqrt(a);
+                                break;
+                            case "tan":
+                                a=Math.Tan(a);
+                                break;
+                            case "cosh":
+                                a=Math.Cosh(a);
+                                break;
+                            case "sinh":
+                                a=Math.Sinh(a);
+                                break;
+                            case "tanh":
+                                a=Math.Tanh(a);
+                                break;
+                            case "acos":
+                                a=Math.Acos(a);
+                                break;
+                            case "asin":
+                                a=Math.Asin(a);
+                                break;
+                            case "atan":
+                                a=Math.Atan(a);
+                                break;
                         }
                     }
                     else{
                         double b=S1.Pop();
-                        if(token=="+"){
-                            a=a+b;
-                        }
-                        else if(token=="-"){
-                            a=b-a;
-                        }
-                        else if(token=="*"){
-                            a=a*b;
-                        }
-                        else if(token=="/"){
-                            if (a==0){
-                                Console.WriteLine("Blad, nie mozna dzielic przez 0!");
-                                Environment.Exit(0);
+                        switch(token){
+                            case "+":
+                                a=a+b;
+                                break;
+                            case "-":
+                                a=b-a;
+                                break;
+                            case "*":
+                                a=a*b;
+                                break;
+                            case "/":
+                                if (a==0){
+                                    Console.WriteLine("Blad, nie mozna dzielic przez 0!");
+                                    Environment.Exit(0);
                             }
-                            a=b/a;                            
-                        }else if(token=="^"){
-                            a=Math.Pow(b,a);
-                        }
+                                break;
+                        } 
                     }
                     S1.Push(a);
                 }
             }
-            return S1.Pop();
+            double wynik=S1.Pop();
+
+            if(this.minus==1) wynik=wynik*(-1);
+
+            return wynik;
         }
 
        public void obliczPrzedzial(){
