@@ -8,7 +8,7 @@ namespace projekt1
     {
         string rownanie;  
         double x, xmin, xmax;
-        int n,minus;       
+        int n,minus=0;       
 
         public RPN (string rownanie, double x, double xmin, double xmax, int n){
             this.rownanie=rownanie;
@@ -33,7 +33,7 @@ namespace projekt1
                 this.minus=1;
                 tabTokenow[0]="";
             }else if(tabTokenow[0]=="-" && tabTokenow[1]!="("){
-                Console.WriteLine("Bledne wyrazenie, cos z minusem!");
+                Console.WriteLine("Bledne wyrazenia, cos z minusem!");
                 Environment.Exit(0);
             }
 
@@ -41,7 +41,8 @@ namespace projekt1
         }
 
         public void wyswietlTokeny(){
-            foreach (string token in this.naTokeny()){               
+            if (this.minus==1) Console.Write("-");
+            foreach (string token in this.naTokeny()){            
                 Console.Write("{0} ",token);                
             }
             Console.WriteLine();
@@ -62,17 +63,23 @@ namespace projekt1
 
             foreach(string token in this.naTokeny()){
                 if(D.ContainsKey(token)){
-                    if(i==0){
+                    if(i==0 && D[token]!=0){
                         wagaL=D[token];
                         i++;
-                    }else if(i!=0){
-                        if(wagaL==D[token]){
-                            Console.WriteLine("Bledne wyraznie, dwa operatory matematyczne obok siebie !");
-                            Environment.Exit(0);
-                        }
-                        wagaL=D[token];                        
+                    }else{
+                        if(D[token]!=0){
+                            if(((wagaL==1 || wagaL==2 || wagaL==3) && (D[token]==1 || D[token]==2 || D[token]==3)) || wagaL==D[token]){
+                                Console.WriteLine("Bledne wyraznie, dwa operatory matematyczne obok siebie !");
+                                Environment.Exit(0);
+                            }                                                    
+                        }else{
+                            wagaL=D[token];
+                        }                        
                     }                    
-                }                
+                }else{
+                    wagaL=0;
+                    i=0;  
+                }            
             }
 
             foreach (string token in this.naTokeny()){
@@ -118,7 +125,9 @@ namespace projekt1
                 R.Add(tmp1);
                 Console.Write("{0} ",tmp1);
             }
-            
+
+            if(this.minus==1) Console.Write("-1 *");
+
             Console.WriteLine();
         }
 
@@ -195,6 +204,9 @@ namespace projekt1
                                     Console.WriteLine("Blad, nie mozna dzielic przez 0!");
                                     Environment.Exit(0);
                             }
+                                break;
+                            case "^":
+                                a=Math.Pow(b,a);
                                 break;
                         } 
                     }
